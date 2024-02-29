@@ -4,8 +4,8 @@ public class Employee {
     private String employeeName;
     private int employeeNumber;
 
-    public Employee(String employeeName, int price) {
-        this.employeeNumber = price;
+    public Employee(String employeeName, int employeeNumber) {
+        this.employeeNumber = employeeNumber;
         this.employeeName = employeeName;
     }
 

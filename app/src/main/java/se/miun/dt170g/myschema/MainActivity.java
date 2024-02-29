@@ -90,21 +90,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void fetchEmployee(RecyclerView recyclerView){
+
+        // Retrofit call to fetch employee data
         Call<ArrayList<Employee>> call = fetchData.getEmployee();
-
         call.enqueue(new Callback<ArrayList<Employee>>() {
-
             @Override
             public void onResponse(Call<ArrayList<Employee>> call, Response<ArrayList<Employee>> response) {
                 if (response.isSuccessful()) {
-                    //Fill the ArrayList with tables from the API.
                     employee = response.body();
-
                     EmployeeAdapter adapter = new EmployeeAdapter(MainActivity.this, employee);
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-
-                }else{
+                } else {
                     Log.d("fetchTables res", String.valueOf(response.code()));
                 }
             }
