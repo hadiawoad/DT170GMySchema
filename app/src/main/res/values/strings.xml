@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">WaiterAPP</string>
+    <string name="visa">Visa</string>
+    <string name="ringa">Ringa</string>
+    <string name="schema">Schema</string>
+    <string name="employeeName">S</string>
+    <string name="employeeNumber">S</string>
+
+</resources>
