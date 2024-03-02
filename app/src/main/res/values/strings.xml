@@ -4,6 +4,8 @@
     <string name="ringa">Ringa</string>
     <string name="schema">Schema</string>
     <string name="employeeName">S</string>
-    <string name="employeeNumber">S</string>
+    <string name="employeeRole">S</string>
+    <string name="employeeDate">S</string>
+    <string name="type">S</string>
 
 </resources>

@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -19,7 +20,11 @@ import android.widget.CalendarView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.stream.Collectors;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,11 +32,12 @@ import se.miun.dt170g.myschema.adapter.EmployeeAdapter;
 import se.miun.dt170g.myschema.fetch.FetchData;
 import se.miun.dt170g.myschema.fetch.Retro;
 import se.miun.dt170g.myschema.models.Employee;
+import se.miun.dt170g.myschema.models.Shift;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private ArrayList<Employee> employee = new ArrayList<>();
+    private ArrayList<Shift> employeeShift = new ArrayList<>();
 
     private Retro retrofit = new Retro();
     private FetchData fetchData = retrofit.getRetrofit().create(FetchData.class);
@@ -59,16 +65,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 // Calendar month is zero-based, add 1 for current month
-                selectedDateMillis = view.getDate();
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                selectedDateMillis = calendar.getTimeInMillis();
+                fetchShift(selectedDateMillis);
             }
 
         });
 
         // Set OnClickListener for the booking button
         button1.setOnClickListener(v -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            String formattedDate = sdf.format(selectedDateMillis);
-            Toast.makeText(MainActivity.this, "Selected date for booking: " + formattedDate, Toast.LENGTH_LONG).show();
+
+            //Toast.makeText(MainActivity.this, "Selected date for booking: " + employeeShift.size(), Toast.LENGTH_LONG).show();
             // Here, implement your logic to handle the booking process
         });
 
@@ -80,35 +88,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Additional button functionalities can be implemented here
-
-
-        RecyclerView recyclerView = findViewById(R.id.calendarView);
-        fetchEmployee(recyclerView);
-
     }
 
-
-    public void fetchEmployee(RecyclerView recyclerView){
-
-        // Retrofit call to fetch employee data
-        Call<ArrayList<Employee>> call = fetchData.getEmployee();
-        call.enqueue(new Callback<ArrayList<Employee>>() {
+   public void fetchShift(long date){
+       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'Z'", Locale.getDefault());
+       String formattedDate = sdf.format(new Date(date));
+        // Retrofit call to fetch Shift data
+        Call<ArrayList<Shift>> call = fetchData.getShift();
+        call.enqueue(new Callback<ArrayList<Shift>>() {
             @Override
-            public void onResponse(Call<ArrayList<Employee>> call, Response<ArrayList<Employee>> response) {
+            public void onResponse(Call<ArrayList<Shift>> call, Response<ArrayList<Shift>> response) {
                 if (response.isSuccessful()) {
-                    employee = response.body();
-                    EmployeeAdapter adapter = new EmployeeAdapter(MainActivity.this, employee);
+                    ArrayList<Shift> shifts = response.body();
+                    ArrayList<Shift> filteredShifts = (ArrayList<Shift>) shifts.stream()
+                            .filter(shift -> shift.getEmployeeDate().startsWith(formattedDate))
+                            .collect(Collectors.toList());
+
+                    EmployeeAdapter adapter = new EmployeeAdapter(MainActivity.this, employee, filteredShifts);
+                    RecyclerView recyclerView = null;
                     recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    adapter.notifyDataSetChanged();
+
                 } else {
-                    Log.d("fetchTables res", String.valueOf(response.code()));
+                    Log.d("fetch res", String.valueOf(response.code()));
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Employee>> call, Throwable t) {
-                Log.d("fetchTables res", t.getMessage());
+            public void onFailure(Call<ArrayList<Shift>> call, Throwable t) {
+                Log.d("fetch res", t.getMessage());
             }
         });
     }
