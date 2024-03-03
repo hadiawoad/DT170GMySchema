@@ -17,21 +17,20 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.MyView
 
     private Context context;
     private ArrayList<Employee> employees;
-    //private ArrayList<Shift> employeeShift;
+    private ArrayList<Shift> employeeShift;
 
-    //public EmployeeAdapter(Context context, ArrayList<Employee> employees, ArrayList<Shift> employeeShift)
-    public EmployeeAdapter(Context context, ArrayList<Employee> employees){
+
+    public EmployeeAdapter(Context context, ArrayList<Employee> employees, ArrayList<Shift> employeeShift){
         this.context = context;
         this.employees = employees;
-        //this.employeeShift = employeeShift;
+        this.employeeShift = employeeShift;
     }
 
     @NonNull
     @Override
     public EmployeeAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        // Assuming there's a layout file named employee_item.xml for individual list items
-        View view = inflater.inflate(R.layout.activity_main, parent, false);
+        View view = inflater.inflate(R.layout.shift_template, parent, false);
 
         return new EmployeeAdapter.MyViewHolder(view);
     }
@@ -39,29 +38,27 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.MyView
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull EmployeeAdapter.MyViewHolder holder, int position) {
-       // holder.employeeName.setText("Employee Name: " + employees.get(position).getEmployeeName());
-        //holder.employeeRole.setText("Employee Role: " + employees.get(position).getEmployeeRole());
-       // holder.employeeDate.setText("Date: " + employeeShift.get(position).getDate());
-       // holder.type.setText("Type: " + employeeShift.get(position).getType());
+        holder.employeeName.setText("Name: " + employees.get(position).getEmployeeName());
+        holder.employeeRole.setText("Role: " + employees.get(position).getEmployeeRole());
+        holder.type.setText("Type: " + employeeShift.get(position).getType());
 
     }
 
     @Override
     public int getItemCount() {
-        return employees.size();
+        return employeeShift.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView employeeName, employeeRole, employeeDate, type;
+        TextView employeeDate, type, employeeName, employeeRole;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             employeeName = itemView.findViewById(R.id.employeeName);
             employeeRole = itemView.findViewById(R.id.employeeRole);
-            type = itemView.findViewById(R.id.employeeDate);
-            employeeDate = itemView.findViewById(R.id.type);
+            type = itemView.findViewById(R.id.type);
         }
     }
 }

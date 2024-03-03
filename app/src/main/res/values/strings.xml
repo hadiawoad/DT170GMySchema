@@ -1,11 +1,8 @@
 <resources>
     <string name="app_name">WaiterAPP</string>
-    <string name="visa">Visa</string>
     <string name="ringa">Ringa</string>
     <string name="schema">Schema</string>
-    <string name="employeeName">S</string>
-    <string name="employeeRole">S</string>
-    <string name="employeeDate">S</string>
-    <string name="type">S</string>
-
+    <string name="employeeName">Name</string>
+    <string name="employeeRole">Role</string>
+    <string name="type">Type</string>
 </resources>
