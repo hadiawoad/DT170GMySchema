@@ -17,12 +17,13 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.MyView
 
     private Context context;
     private ArrayList<Employee> employees;
-    private ArrayList<Shift> employeeShift;
+    //private ArrayList<Shift> employeeShift;
 
-    public EmployeeAdapter(Context context, ArrayList<Employee> employees, ArrayList<Shift> employeeShift){
+    //public EmployeeAdapter(Context context, ArrayList<Employee> employees, ArrayList<Shift> employeeShift)
+    public EmployeeAdapter(Context context, ArrayList<Employee> employees){
         this.context = context;
         this.employees = employees;
-        this.employeeShift = employeeShift;
+        //this.employeeShift = employeeShift;
     }
 
     @NonNull
@@ -38,10 +39,10 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.MyView
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull EmployeeAdapter.MyViewHolder holder, int position) {
-        holder.employeeName.setText("Employee Name: " + employees.get(position).getEmployeeName());
-        holder.employeeRole.setText("Employee Role: " + employees.get(position).getEmployeeRole());
-        holder.employeeDate.setText("Date: " + employeeShift.get(position).getEmployeeDate());
-        holder.type.setText("Type: " + employeeShift.get(position).getType());
+       // holder.employeeName.setText("Employee Name: " + employees.get(position).getEmployeeName());
+        //holder.employeeRole.setText("Employee Role: " + employees.get(position).getEmployeeRole());
+       // holder.employeeDate.setText("Date: " + employeeShift.get(position).getDate());
+       // holder.type.setText("Type: " + employeeShift.get(position).getType());
 
     }
 

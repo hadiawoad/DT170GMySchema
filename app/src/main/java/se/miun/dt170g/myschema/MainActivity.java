@@ -4,11 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 import se.miun.dt170g.myschema.adapter.EmployeeAdapter;
 import se.miun.dt170g.myschema.fetch.FetchData;
 import se.miun.dt170g.myschema.fetch.Retro;
@@ -53,10 +54,21 @@ public class MainActivity extends AppCompatActivity {
         // Initialize buttons and calendar view
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
 
-        Button button1 = findViewById(R.id.visa);
+        Button visa = findViewById(R.id.visa);
         Button callButton = findViewById(R.id.ringa);
+
+        // Set OnClickListener for the call button
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestCallPermission(); // This initiates the permission request and call process
+            }
+        });
+
+
         CalendarView calendarView = findViewById(R.id.calendarView);
 
+        /*
         // Default to current date
         selectedDateMillis = calendarView.getDate();
 
@@ -70,28 +82,52 @@ public class MainActivity extends AppCompatActivity {
                 selectedDateMillis = calendar.getTimeInMillis();
                 fetchShift(selectedDateMillis);
             }
-
         });
 
-        // Set OnClickListener for the booking button
-        button1.setOnClickListener(v -> {
+        */
 
-            //Toast.makeText(MainActivity.this, "Selected date for booking: " + employeeShift.size(), Toast.LENGTH_LONG).show();
+        // Set OnClickListener for the booking button
+        visa.setOnClickListener(v -> {
+
+            Toast.makeText(MainActivity.this, "Selected date for booking: " + employee.size(), Toast.LENGTH_LONG).show();
             // Here, implement your logic to handle the booking process
         });
 
-        // Set OnClickListener for the call button
-        callButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestCallPermission(); // This initiates the permission request and call process
-            }
-        });
+        RecyclerView recyclerView = findViewById(R.id.ShiftRV);
+        fetchEmployee(recyclerView);
 
     }
 
+    public void fetchEmployee(RecyclerView recyclerView){
+        Call<ArrayList<Employee>> call = fetchData.getEmployee();
+
+        call.enqueue(new Callback<ArrayList<Employee>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Employee>> call, Response<ArrayList<Employee>> response) {
+                if (response.isSuccessful()) {
+                    employee = response.body();
+
+                  //  EmployeeAdapter drinksAdapter = new EmployeeAdapter(MainActivity.this, employee);
+                    //recyclerView.setAdapter(drinksAdapter);
+                    //recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+                }else{
+                    Log.d("Response", String.valueOf(response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Employee>> call, Throwable t) {
+                Log.d("Response", t.getMessage());
+            }
+        });
+    }
+
+
+
+
    public void fetchShift(long date){
-       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'Z'", Locale.getDefault());
+       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
        String formattedDate = sdf.format(new Date(date));
         // Retrofit call to fetch Shift data
         Call<ArrayList<Shift>> call = fetchData.getShift();
@@ -101,11 +137,12 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     ArrayList<Shift> shifts = response.body();
                     ArrayList<Shift> filteredShifts = (ArrayList<Shift>) shifts.stream()
-                            .filter(shift -> shift.getEmployeeDate().startsWith(formattedDate))
+                            .filter(shift -> shift.getDate().startsWith(formattedDate))
                             .collect(Collectors.toList());
 
-                    EmployeeAdapter adapter = new EmployeeAdapter(MainActivity.this, employee, filteredShifts);
-                    RecyclerView recyclerView = null;
+                    EmployeeAdapter adapter = new EmployeeAdapter(MainActivity.this, employee);
+                    RecyclerView recyclerView = findViewById(R.id.calendarView);
+
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 

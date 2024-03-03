@@ -3,13 +3,13 @@ package se.miun.dt170g.myschema.models;
 public class Shift {
 
     private int shiftId;
-    private String employeeDate;
+    private String date;
     private String type;
     private int employeeId;
 
-    public Shift(int shiftId, String employeeDate, String type, int employeeId) {
+    public Shift(int shiftId, String date, String type, int employeeId) {
         this.shiftId = shiftId;
-        this.employeeDate = employeeDate;
+        this.date = date;
         this.type = type;
         this.employeeId = employeeId;
     }
@@ -22,12 +22,12 @@ public class Shift {
         this.shiftId = shiftId;
     }
 
-    public String getEmployeeDate() {
-        return employeeDate;
+    public String getDate() {
+        return date;
     }
 
-    public void setEmployeeDate(String employeeDate) {
-        this.employeeDate = employeeDate;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getType() {
