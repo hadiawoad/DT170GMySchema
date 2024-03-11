@@ -38,10 +38,14 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.MyView
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull EmployeeAdapter.MyViewHolder holder, int position) {
-        holder.employeeName.setText("Name: " + employees.get(position).getEmployeeName());
-        holder.employeeRole.setText("Role: " + employees.get(position).getEmployeeRole());
-        holder.type.setText("Type: " + employeeShift.get(position).getType());
 
+        for (int i = 0; i<employees.size(); i++){
+            if (employeeShift.get(position).getEmployeeId() == employees.get(i).getEmployeeId()){
+                holder.employeeName.setText("Name: " + employees.get(i).getEmployeeName());
+                holder.employeeRole.setText("Role: " + employees.get(i).getEmployeeRole());
+                holder.type.setText("Type: " + employeeShift.get(position).getType());
+            }
+        }
     }
 
     @Override
